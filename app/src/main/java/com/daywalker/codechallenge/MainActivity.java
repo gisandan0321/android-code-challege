@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.daywalker.codechallenge.app.Http;
 import com.daywalker.codechallenge.app.NetworkConnection;
@@ -91,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
                     Track track = new Track(item.getInt("trackId"))
                             .setTrackName(item.getString("trackName"))
                             .setTrackPrice(Float.parseFloat(item.getString("trackPrice")))
+                            .setTrackHdPrice(Float.parseFloat(item.getString("trackHdPrice")))
                             .setPrimaryGenreName(item.getString("primaryGenreName"))
+                            .setCurrency(item.getString("currency"))
                             .setArtworkUrl60(item.getString("artworkUrl60"));
 
                     tracks.add(track);
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
      * @param trackId int
      */
     public void openTrack(int trackId) {
-        Intent intent = new Intent(this, TrackActivity.class);
+        Intent intent = new Intent(this, ItemActivity.class);
 
         Bundle bundle = new Bundle();
         bundle.putInt("id", trackId);

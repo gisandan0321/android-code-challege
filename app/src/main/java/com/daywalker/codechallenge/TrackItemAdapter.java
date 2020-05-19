@@ -15,6 +15,7 @@ import com.daywalker.codechallenge.models.Track;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.ViewHolder> {
 
@@ -58,7 +59,11 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
         genreView.setText(track.getPrimaryGenreName());
 
         TextView priceView = holder.price;
-        priceView.setText(String.valueOf(track.getTrackPrice()));
+        float priceValue = (track.getTrackHdPrice() > 0) ?
+                track.getTrackHdPrice() : track.getTrackPrice();
+
+        String price = String.valueOf(priceValue);
+        priceView.setText(String.format("%s %s", price, track.getCurrency()));
     }
 
     @Override
