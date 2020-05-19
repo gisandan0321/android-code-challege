@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">CodeChallenge</string>
+
+<!--    Error Strings-->
+    <string name="ERR_NO_INTERNET_CONNECTION">Unable to connect to server. Please check your internet connection.</string>
+
+<!--    Button Strings-->
+    <string name="BUTTON_TRY_AGAIN">Try again</string>
+
+<!--    Image Description-->
+    <string name="track_preview">Track Description</string>
+
+    <string name="loading">Loading…</string>
 </resources>
