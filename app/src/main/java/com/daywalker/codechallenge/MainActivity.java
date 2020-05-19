@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -27,6 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int TRACK_CODE = 1010;
+
     RecyclerView transactionItemsView;
     TrackItemAdapter trackItemAdapter;
 
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         transactionItemsView = findViewById(R.id.tracks);
-        trackItemAdapter = new TrackItemAdapter(tracks);
+
+        trackItemAdapter = new TrackItemAdapter(this, tracks);
         transactionItemsView.setAdapter(trackItemAdapter);
         transactionItemsView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -78,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         http.request(Http.GET, URLEncodedUtils.format(params, "utf-8"));
         http.setListener(response -> {
-            Log.d("Fire", "Request");
             try {
                 JSONObject data = new JSONObject(response);
                 resultCount = data.getInt("resultCount");
@@ -104,5 +106,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         http.execute(Http.API_URL + "/search?");
+    }
+
+    /**
+     * Open Track ID
+     * @param trackId int
+     */
+    public void openTrack(int trackId) {
+        Intent intent = new Intent(this, TrackActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", trackId);
+        intent.putExtras(bundle);
+
+        startActivityForResult(intent, TRACK_CODE);
     }
 }

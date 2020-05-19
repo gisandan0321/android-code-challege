@@ -113,7 +113,7 @@ public class Track {
      * @param collectionCensoredName String
      * @return this
      */
-    public Track setTollectionCensoredName(String collectionCensoredName) {
+    public Track setCollectionCensoredName(String collectionCensoredName) {
         this.collectionCensoredName = collectionCensoredName;
         return this;
     }

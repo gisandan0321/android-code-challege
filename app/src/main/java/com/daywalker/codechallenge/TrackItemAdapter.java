@@ -19,6 +19,7 @@ import java.util.List;
 public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.ViewHolder> {
 
     private final List<Track> tracks;
+    private Context mContext;
 
     @NonNull
     @Override
@@ -37,6 +38,12 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
         Track track = tracks.get(position);
+
+        holder.item.setOnClickListener(v -> {
+            if (mContext instanceof MainActivity) {
+                ((MainActivity) mContext).openTrack(track.getTrackId());
+            }
+        });
 
         // Set item views based on your views and data model
         ImageView artworkView = holder.preview;
@@ -62,6 +69,7 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     class ViewHolder extends RecyclerView.ViewHolder {
+        final LinearLayout item;
         final ImageView preview;
         final TextView name;
         final TextView genre;
@@ -71,7 +79,7 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
             super(itemView);
             // Your holder should contain a member variable
             // for any view that will be set as you render a row
-            LinearLayout item = itemView.findViewById(R.id.track_item_linear);
+            item = itemView.findViewById(R.id.track_item_linear);
             preview = itemView.findViewById(R.id.artwork);
             name = itemView.findViewById(R.id.name);
             genre = itemView.findViewById(R.id.genre);
@@ -80,7 +88,8 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
     }
 
     // Pass in the contact array into the constructor
-    public TrackItemAdapter(List<Track> items) {
+    TrackItemAdapter(Context context, List<Track> items) {
         this.tracks = items;
+        mContext = context;
     }
 }
