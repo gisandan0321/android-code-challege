@@ -11,16 +11,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daywalker.codechallenge.app.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.ViewHolder> {
 
     private final List<Track> tracks;
     private Context mContext;
+    private boolean connected;
 
     @NonNull
     @Override
@@ -49,8 +50,11 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
         // Set item views based on your views and data model
         ImageView artworkView = holder.preview;
 
-        //Loading image using Picasso
-        Picasso.get().load(track.getArtworkUrl60()).into(artworkView);
+        if (connected) {
+            Picasso.get().load(track.getArtworkUrl60()).into(artworkView);
+        } else {
+            artworkView.setImageResource(R.drawable.image_default);
+        }
 
         TextView nameView = holder.name;
         nameView.setText(track.getTrackName());
@@ -96,5 +100,6 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
     TrackItemAdapter(Context context, List<Track> items) {
         this.tracks = items;
         mContext = context;
+        connected = new NetworkConnection(mContext).isConnected();
     }
 }

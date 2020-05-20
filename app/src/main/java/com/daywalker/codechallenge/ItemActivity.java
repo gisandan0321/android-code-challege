@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.daywalker.codechallenge.app.Http;
+import com.daywalker.codechallenge.app.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +40,8 @@ public class ItemActivity extends AppCompatActivity {
 
     ActionBar actionBar;
 
+    boolean connected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +55,14 @@ public class ItemActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         trackId = (bundle != null) ? bundle.getInt("id") : -1;
 
+        connected = new NetworkConnection(getApplicationContext()).isConnected();
+
         getTrackDetails();
     }
 
     /**
      * On Option Item Selected
-     * @param item MenuIte
+     * @param item MenuItem
      * @return boolean
      */
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -136,7 +141,12 @@ public class ItemActivity extends AppCompatActivity {
 
     private void showDetails() {
         ImageView artwork = findViewById(R.id.artwork);
-        Picasso.get().load(track.getArtworkUrl100()).into(artwork);
+
+        if (connected) {
+            Picasso.get().load(track.getArtworkUrl100()).into(artwork);
+        } else {
+            artwork.setImageResource(R.drawable.image_default);
+        }
 
         TextView name = findViewById(R.id.name);
         name.setText(track.getTrackName());
@@ -170,17 +180,20 @@ public class ItemActivity extends AppCompatActivity {
         priceView.setText(String.format("%s %s", price, track.getCurrency()));
 
         VideoView trailer = findViewById(R.id.trailer);
-        trailer.setVideoURI(Uri.parse(track.getPreviewUrl()));
+
+        ImageView trailerPlaceholder = findViewById(R.id.videoPlaceholder);
         MediaController mediaController = new MediaController(this);
         trailer.setMediaController(mediaController);
 
-        trailer.setKeepScreenOn(true);
-        trailer.setOnPreparedListener(mp -> {
-            trailer.start();
-            mediaController.show(0);
-        });
-
-        trailer.start();
+        if (connected) {
+            trailer.setVisibility(View.VISIBLE);
+            trailerPlaceholder.setVisibility(View.GONE);
+            trailer.setVideoURI(Uri.parse(track.getPreviewUrl()));
+            trailer.setOnPreparedListener(mp -> {
+                trailer.start();
+                mediaController.show(0);
+            });
+        }
     }
 
     /**
