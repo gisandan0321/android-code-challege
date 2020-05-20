@@ -24,6 +24,7 @@ public abstract class Database extends SQLiteOpenHelper {
 
     // Table Name
     private String table;
+
     // Database
     private static final String DATABASE_NAME = "code_challenge.db";
     private static final int DATABASE_VERSION = 1;
@@ -41,7 +42,7 @@ public abstract class Database extends SQLiteOpenHelper {
      * Set Table Name
      * @param table String table name
      */
-    public void setTable(String table) {
+    protected void setTable(String table) {
         this.table = table;
     }
 
@@ -49,8 +50,9 @@ public abstract class Database extends SQLiteOpenHelper {
      * Insert Multiple Data
      *
      * @param  values table data
+     * @return boolean
      */
-    public void insertBatch(JSONArray values) {
+    protected boolean insertBatch(JSONArray values) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
@@ -68,61 +70,14 @@ public abstract class Database extends SQLiteOpenHelper {
             }
 
             db.setTransactionSuccessful();
+            return true;
         } catch (JSONException e) {
             e.printStackTrace();
+            return false;
         } finally {
             db.endTransaction();
             db.close();
         }
-    }
-
-    /**
-     * Insert Data to Specific Table
-     * @return true if successfully inserted and false if not
-     */
-    public long insert(ContentValues values) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.insert(this.table, null, values);
-    }
-
-    /**
-     * Update Data
-     *
-     * @param values column names and values
-     * @param column where column
-     * @param id unique record identifier
-     * @return true if successfully updated and false if not
-     */
-    public boolean update(ContentValues values, String column, String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.update(this.table, values, column + " = " + id, null) == 1;
-    }
-
-
-    /**
-     * Delete Table Record
-     * @param column where column
-     * @param id unique record identifier
-     */
-    public void delete(String column, String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(this.table, column + " = " + id, null);
-    }
-
-    /**
-     * Custom Query with Search Param
-     *
-     * @param query String
-     * @param values String array
-     * @return cursor Cursor
-     */
-    public Cursor rawQuery(String query, String[] values) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, values);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
     }
 
     /**
@@ -133,7 +88,7 @@ public abstract class Database extends SQLiteOpenHelper {
      * @param values String array
      * @return return cursor
      */
-    public Cursor fetch(String[] columns, String keys, String[] values) {
+    protected Cursor fetch(String[] columns, String keys, String[] values) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(this.table, columns, keys, values, null, null, null);

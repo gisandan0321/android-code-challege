@@ -39,7 +39,7 @@ public class Track {
     private String contentAdvisoryRating;
     private String shortDescription;
     private String longDescription;
-    private boolean hasItunesExtras;
+    private boolean hasITunesExtras;
 
     /**
      * Track Model Constructor
@@ -279,7 +279,7 @@ public class Track {
     }
 
     /**
-     * Set Collection Explicitnewss
+     * Set Collection Explicitness
      * @param collectionExplicitness String
      * @return this
      */
@@ -410,11 +410,11 @@ public class Track {
 
     /**
      * Set Has ITunes Extras
-     * @param hasItunesExtras boolean
+     * @param hasITunesExtras boolean
      * @return this
      */
-    public Track setHasITunesExtras(boolean hasItunesExtras) {
-        this.hasItunesExtras = hasItunesExtras;
+    public Track setHasITunesExtras(boolean hasITunesExtras) {
+        this.hasITunesExtras = hasITunesExtras;
         return this;
     }
 
@@ -719,6 +719,6 @@ public class Track {
      * @return boolean
      */
     public boolean hasItunes() {
-        return hasItunesExtras;
+        return hasITunesExtras;
     }
 }

@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +18,7 @@ import com.daywalker.codechallenge.R;
 import com.daywalker.codechallenge.helpers.Http;
 import com.daywalker.codechallenge.helpers.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
+import com.daywalker.codechallenge.repositories.TrackRepository;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.NameValuePair;
@@ -34,11 +34,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
 
 public class ItemActivity extends AppCompatActivity {
 
     private int trackId;
     private Track track;
+
+    private TrackRepository trackRepository;
 
     ActionBar actionBar;
 
@@ -48,6 +51,8 @@ public class ItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
+
+        trackRepository = new TrackRepository(this);
 
         actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -76,71 +81,104 @@ public class ItemActivity extends AppCompatActivity {
 
     // Get Track Details
     private void getTrackDetails() {
-        Http http = new Http();
-
         ProgressDialog dialog = ProgressDialog.show(this, "",
                 "Loading...", true);
 
-        List<NameValuePair> params = new LinkedList<>();
-        params.add(new BasicNameValuePair("id", String.valueOf(trackId)));
+        if (connected) {
+            Http http = new Http();
 
-        http.request(Http.GET, URLEncodedUtils.format(params, "utf-8"));
-        http.setListener(response -> {
-            try {
-                JSONObject data = new JSONObject(response);
+            List<NameValuePair> params = new LinkedList<>();
+            params.add(new BasicNameValuePair("id", String.valueOf(trackId)));
 
-                JSONArray tracksList = data.getJSONArray("results");
-                if (tracksList.length() > 0) {
-                    JSONObject item = tracksList.getJSONObject(0);
-                    track = new Track(item.getInt("trackId"))
-                            .setTrackName(item.getString("trackName"))
-                            .setKind(item.getString("kind"))
-                            .setWrapperType(item.getString("wrapperType"))
-                            .setCollectionId(item.getInt("collectionId"))
-                            .setArtistName(item.getString("artistName"))
-                            .setCollectionCensoredName(item.getString("collectionCensoredName"))
-                            .setTrackCensoredName(item.getString("trackCensoredName"))
-                            .setCollectionArtistId(item.getInt("collectionArtistId"))
-                            .setCollectionArtistViewUrl(item.getString("collectionArtistViewUrl"))
-                            .setCollectionViewUrl(item.getString("collectionViewUrl"))
-                            .setTrackViewUrl(item.getString("trackViewUrl"))
-                            .setPreviewUrl(item.getString("previewUrl"))
-                            .setArtworkUrl30(item.getString("artworkUrl30"))
-                            .setArtworkUrl60(item.getString("artworkUrl60"))
-                            .setArtworkUrl100(item.getString("artworkUrl100"))
-                            .setCollectionPrice(Float.parseFloat(item.getString("collectionPrice")))
-                            .setTrackPrice(Float.parseFloat(item.getString("trackPrice")))
-                            .setCollectionHdPrice(Float.parseFloat(item.getString("collectionHdPrice")))
-                            .setTrackHdPrice(Float.parseFloat(item.getString("trackHdPrice")))
-                            .setReleaseDate(item.getString("releaseDate"))
-                            .setCollectionExplicitness(item.getString("collectionExplicitness"))
-                            .setTrackExplicitness(item.getString("trackExplicitness"))
-                            .setDiscCount(item.getInt("discCount"))
-                            .setDiscNumber(item.getInt("discNumber"))
-                            .setTrackCount(item.getInt("trackCount"))
-                            .setTrackNumber(item.getInt("trackNumber"))
-                            .setTrackTimeMillis(item.getInt("trackTimeMillis"))
-                            .setCountry(item.getString("country"))
-                            .setCurrency(item.getString("currency"))
-                            .setPrimaryGenreName(item.getString("primaryGenreName"))
-                            .setContentAdvisoryRating(item.getString("contentAdvisoryRating"))
-                            .setLongDescription(item.getString("longDescription"))
-                            .setHasITunesExtras(item.getBoolean("hasITunesExtras"));
+            http.request(Http.GET, URLEncodedUtils.format(params, "utf-8"));
+            http.setListener(response -> {
+                try {
+                    JSONObject data = new JSONObject(response);
 
-                    if (actionBar != null) {
-                        actionBar.setTitle(track.getTrackName());
+                    JSONArray tracksList = data.getJSONArray("results");
+                    if (tracksList.length() > 0) {
+                        JSONObject item = tracksList.getJSONObject(0);
+
+                        int collectionId = item.has("collectionId") ? item.getInt("collectionId") : 0;
+                        String collectionName = item.has("collectionName") ? item.getString("collectionName") : "";
+                        String collectionCensoredName = item.has("collectionCensoredName") ? item.getString("collectionCensoredName") : "";
+
+                        int collectionArtistId = item.has("collectionArtistId") ? item.getInt("collectionArtistId") : 0;
+
+                        String collectionArtistViewUrl = item.has("collectionArtistViewUrl") ? item.getString("collectionArtistViewUrl") : "";
+                        String collectionViewUrl = item.has("collectionViewUrl") ? item.getString("collectionViewUrl") : "";
+
+                        float trackRentalPrice = item.has("trackRentalPrice") ? Float.parseFloat(item.getString("trackRentalPrice")) : 0;
+                        float trackHdRentalPrice = item.has("trackHdRentalPrice") ? Float.parseFloat(item.getString("trackHdRentalPrice")) : 0;
+
+                        int discCount = item.has("discCount") ? item.getInt("discCount") : 0;
+                        int discNumber = item.has("discNumber") ? item.getInt("discNumber") : 0;
+                        int trackCount = item.has("trackCount") ? item.getInt("trackCount") : 0;
+                        int trackNumber = item.has("trackNumber") ? item.getInt("trackNumber") : 0;
+
+                        String shortDescription = item.has("shortDescription") ? item.getString("shortDescription") : "";
+                        boolean hasITunesExtra = item.has("hasITunesExtras") && item.getBoolean("hasITunesExtras");
+
+                        track = new Track(item.getInt("trackId"))
+                                .setTrackName(item.getString("trackName"))
+                                .setKind(item.getString("kind"))
+                                .setWrapperType(item.getString("wrapperType"))
+                                .setCollectionId(collectionId)
+                                .setCollectionName(collectionName)
+                                .setArtistName(item.getString("artistName"))
+                                .setCollectionCensoredName(collectionCensoredName)
+                                .setTrackCensoredName(item.getString("trackCensoredName"))
+                                .setCollectionArtistId(collectionArtistId)
+                                .setCollectionArtistViewUrl(collectionArtistViewUrl)
+                                .setCollectionViewUrl(collectionViewUrl)
+                                .setTrackViewUrl(item.getString("trackViewUrl"))
+                                .setPreviewUrl(item.getString("previewUrl"))
+                                .setArtworkUrl30(item.getString("artworkUrl30"))
+                                .setArtworkUrl60(item.getString("artworkUrl60"))
+                                .setArtworkUrl100(item.getString("artworkUrl100"))
+                                .setCollectionPrice(Float.parseFloat(item.getString("collectionPrice")))
+                                .setTrackPrice(Float.parseFloat(item.getString("trackPrice")))
+                                .setCollectionHdPrice(Float.parseFloat(item.getString("collectionHdPrice")))
+                                .setTrackHdPrice(Float.parseFloat(item.getString("trackHdPrice")))
+                                .setTrackRentalPrice(trackRentalPrice)
+                                .setTrackHdRentalPrice(trackHdRentalPrice)
+                                .setReleaseDate(item.getString("releaseDate"))
+                                .setCollectionExplicitness(item.getString("collectionExplicitness"))
+                                .setTrackExplicitness(item.getString("trackExplicitness"))
+                                .setDiscCount(discCount)
+                                .setDiscNumber(discNumber)
+                                .setTrackCount(trackCount)
+                                .setTrackNumber(trackNumber)
+                                .setTrackTimeMillis(item.getInt("trackTimeMillis"))
+                                .setCountry(item.getString("country"))
+                                .setCurrency(item.getString("currency"))
+                                .setPrimaryGenreName(item.getString("primaryGenreName"))
+                                .setContentAdvisoryRating(item.getString("contentAdvisoryRating"))
+                                .setShortDescription(shortDescription)
+                                .setLongDescription(item.getString("longDescription"))
+                                .setHasITunesExtras(hasITunesExtra);
+
+                        if (actionBar != null) {
+                            actionBar.setTitle(track.getTrackName());
+                        }
+
+                        showDetails();
                     }
-
-                    showDetails();
+                    dialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                dialog.dismiss();
-            }
-        });
+            });
 
-        http.execute(Http.API_URL + "/lookup?");
+            http.execute(Http.API_URL + "/lookup?");
+        } else {
+            CompletableFuture.runAsync(() -> {
+                track = trackRepository.getById(trackId);
+                dialog.dismiss();
+                showDetails();
+            });
+        }
     }
 
     private void showDetails() {

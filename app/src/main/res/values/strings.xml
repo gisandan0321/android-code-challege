@@ -3,6 +3,7 @@
 
     <!--    Error Strings-->
     <string name="ERR_NO_INTERNET_CONNECTION">Unable to connect to server. Please check your internet connection.</string>
+    <string name="ERR_CANT_STORE_DATA">Unable to store data in the device.</string>
 
     <!--    Button Strings-->
     <string name="BUTTON_TRY_AGAIN">Try again</string>
