@@ -1,4 +1,4 @@
-package com.daywalker.codechallenge;
+package com.daywalker.codechallenge.activities.main.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daywalker.codechallenge.app.NetworkConnection;
+import com.daywalker.codechallenge.R;
+import com.daywalker.codechallenge.activities.main.MainActivity;
+import com.daywalker.codechallenge.helpers.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
 import com.squareup.picasso.Picasso;
 
@@ -97,7 +99,7 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
     }
 
     // Pass in the contact array into the constructor
-    TrackItemAdapter(Context context, List<Track> items) {
+    public TrackItemAdapter(Context context, List<Track> items) {
         this.tracks = items;
         mContext = context;
         connected = new NetworkConnection(mContext).isConnected();

@@ -3,7 +3,8 @@ package com.daywalker.codechallenge.repositories;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.daywalker.codechallenge.app.Database;
+import com.daywalker.codechallenge.helpers.Database;
+import com.daywalker.codechallenge.models.Track;
 import com.daywalker.codechallenge.repositories.interfaces.TrackInterface;
 
 import org.json.JSONException;
@@ -101,5 +102,10 @@ public class TrackRepository extends Database implements TrackInterface {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
         this.onCreate(db);
+    }
+
+    @Override
+    public void insert(Track track) {
+
     }
 }

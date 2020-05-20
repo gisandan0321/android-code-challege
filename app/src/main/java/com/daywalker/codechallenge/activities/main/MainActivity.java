@@ -1,6 +1,5 @@
-package com.daywalker.codechallenge;
+package com.daywalker.codechallenge.activities.main;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,10 +11,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daywalker.codechallenge.app.Http;
-import com.daywalker.codechallenge.app.NetworkConnection;
+import com.daywalker.codechallenge.R;
+import com.daywalker.codechallenge.activities.item.ItemActivity;
+import com.daywalker.codechallenge.activities.main.adapters.TrackItemAdapter;
+import com.daywalker.codechallenge.helpers.Http;
+import com.daywalker.codechallenge.helpers.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
-import com.daywalker.codechallenge.repositories.TrackRepository;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;

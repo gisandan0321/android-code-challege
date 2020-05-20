@@ -1,4 +1,4 @@
-package com.daywalker.codechallenge.app;
+package com.daywalker.codechallenge.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;

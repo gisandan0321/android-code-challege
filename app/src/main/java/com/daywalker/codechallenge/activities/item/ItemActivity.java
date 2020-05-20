@@ -1,4 +1,4 @@
-package com.daywalker.codechallenge;
+package com.daywalker.codechallenge.activities.item;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,8 +15,9 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.daywalker.codechallenge.app.Http;
-import com.daywalker.codechallenge.app.NetworkConnection;
+import com.daywalker.codechallenge.R;
+import com.daywalker.codechallenge.helpers.Http;
+import com.daywalker.codechallenge.helpers.NetworkConnection;
 import com.daywalker.codechallenge.models.Track;
 import com.squareup.picasso.Picasso;
 
@@ -66,7 +68,9 @@ public class ItemActivity extends AppCompatActivity {
      * @return boolean
      */
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (item.getItemId() == 16908332) { // Specifically check if back button pressed
+            finish();
+        }
         return true;
     }
 
