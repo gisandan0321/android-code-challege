@@ -188,7 +188,11 @@ public class ItemActivity extends AppCompatActivity {
         ImageView artwork = findViewById(R.id.artwork);
 
         if (connected) {
-            Picasso.get().load(track.getArtworkUrl100()).into(artwork);
+            Picasso.get()
+                    .load(track.getArtworkUrl100())
+                    .placeholder(R.drawable.image_default)
+                    .error(R.drawable.image_default)
+                    .into(artwork);
         } else {
             artwork.setImageResource(R.drawable.image_default);
         }
