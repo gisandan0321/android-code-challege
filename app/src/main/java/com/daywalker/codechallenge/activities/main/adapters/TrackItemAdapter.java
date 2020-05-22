@@ -53,7 +53,12 @@ public class TrackItemAdapter extends RecyclerView.Adapter<TrackItemAdapter.View
         ImageView artworkView = holder.preview;
 
         if (connected) {
-            Picasso.get().load(track.getArtworkUrl60()).into(artworkView);
+            Picasso.get()
+                    .load(track.getArtworkUrl60())
+                    .placeholder(R.drawable.image_default)
+                    .error(R.drawable.image_default)
+                    .into(artworkView);
+
         } else {
             artworkView.setImageResource(R.drawable.image_default);
         }
