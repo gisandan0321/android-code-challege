@@ -108,6 +108,9 @@ public class ItemActivity extends AppCompatActivity {
                         String collectionArtistViewUrl = item.has("collectionArtistViewUrl") ? item.getString("collectionArtistViewUrl") : "";
                         String collectionViewUrl = item.has("collectionViewUrl") ? item.getString("collectionViewUrl") : "";
 
+                        float collectionHdPrice = item.has("collectionHdPrice") ?Float.parseFloat(item.getString("collectionHdPrice")) : 0;
+                        float trackHdPrice = item.has("collectionHdPrice") ? Float.parseFloat(item.getString("trackHdPrice")) : 0;
+
                         float trackRentalPrice = item.has("trackRentalPrice") ? Float.parseFloat(item.getString("trackRentalPrice")) : 0;
                         float trackHdRentalPrice = item.has("trackHdRentalPrice") ? Float.parseFloat(item.getString("trackHdRentalPrice")) : 0;
 
@@ -138,8 +141,8 @@ public class ItemActivity extends AppCompatActivity {
                                 .setArtworkUrl100(item.getString("artworkUrl100"))
                                 .setCollectionPrice(Float.parseFloat(item.getString("collectionPrice")))
                                 .setTrackPrice(Float.parseFloat(item.getString("trackPrice")))
-                                .setCollectionHdPrice(Float.parseFloat(item.getString("collectionHdPrice")))
-                                .setTrackHdPrice(Float.parseFloat(item.getString("trackHdPrice")))
+                                .setCollectionHdPrice(collectionHdPrice)
+                                .setTrackHdPrice(trackHdPrice)
                                 .setTrackRentalPrice(trackRentalPrice)
                                 .setTrackHdRentalPrice(trackHdRentalPrice)
                                 .setReleaseDate(item.getString("releaseDate"))
